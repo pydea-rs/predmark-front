@@ -1,0 +1,11 @@
+<div class="market-detail">
+  <h2>{{ market?.question }}</h2>
+  <ul>
+    <li *ngFor="let outcome of market?.outcomeTokens; let i = index" (click)="selectedOutcomeIndex = i">
+      {{ outcome.name }}
+    </li>
+  </ul>
+  <input type="number" [(ngModel)]="amount" placeholder="Amount">
+  <button (click)="buyOutcome()">Buy</button>
+  <button (click)="sellOutcome()">Sell</button>
+</div>

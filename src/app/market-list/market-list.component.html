@@ -1,0 +1,8 @@
+<div class="market-list">
+  <h2>Open Prediction Markets</h2>
+  <ul>
+    <li *ngFor="let market of markets" (click)="openMarket(market.id)">
+      {{ market.question }}
+    </li>
+  </ul>
+</div>
