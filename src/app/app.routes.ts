@@ -4,7 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { MarketListComponent } from './market-list/market-list.component';
 import { MarketDetailComponent } from './market-detail/market-detail.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'markets', component: MarketListComponent },
   { path: 'market/:id', component: MarketDetailComponent }

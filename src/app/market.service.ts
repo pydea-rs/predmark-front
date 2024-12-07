@@ -1,28 +1,42 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ApiService } from './api.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MarketService {
-  private apiUrl = 'http://localhost:3000/api';  // Change to your backend URL
+  constructor(private apiService: ApiService) {}
 
-  constructor(private http: HttpClient) {}
-
-  getMarkets(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/prediction-market`);
+  getMarkets() {
+    return this.apiService.get(`prediction-market`);
   }
 
-  getMarketById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/prediction-market/${id}`);
+  getMarketById(id: number) {
+    return this.apiService.get(`prediction-market/${id}`);
   }
 
-  buyOutcome(marketId: number, amount: number, outcomeIndex: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/prediction-market/ctf/buy`, { marketId, amount, outcomeIndex });
+  buyOutcome(
+    marketId: number,
+    amount: number,
+    outcomeIndex: number
+  ) {
+    return this.apiService.post('prediction-market/ctf/buy', {
+      marketId,
+      amount,
+      outcomeIndex,
+    });
   }
 
-  sellOutcome(marketId: number, amount: number, outcomeIndex: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/prediction-market/ctf/sell`, { marketId, amount, outcomeIndex });
+  sellOutcome(
+    marketId: number,
+    amount: number,
+    outcomeIndex: number
+  ){
+    return this.apiService.post('prediction-market/ctf/sell', {
+      marketId,
+      amount,
+      outcomeIndex,
+    });
   }
 }

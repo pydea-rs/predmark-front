@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MarketService } from '../market.service';
+import { FormsModule } from '@angular/forms';
+import { NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-market-detail',
   templateUrl: './market-detail.component.html',
   styleUrls: ['./market-detail.component.css'],
+  imports: [FormsModule, NgFor],
 })
 export class MarketDetailComponent implements OnInit {
   market: any;
@@ -31,9 +34,6 @@ export class MarketDetailComponent implements OnInit {
 
   buyOutcome(): void {
     if (this.selectedOutcomeIndex !== null) {
-      const token = localStorage.getItem('accessToken');
-      const headers = { Authorization: `Bearer ${token}` };
-
       this.marketService
         .buyOutcome(this.market.id, this.amount, this.selectedOutcomeIndex)
         .subscribe(
