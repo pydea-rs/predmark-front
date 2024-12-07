@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MarketService } from '../market.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -65,7 +65,8 @@ export class MarketDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private marketService: MarketService
+    private marketService: MarketService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -120,9 +121,13 @@ export class MarketDetailComponent implements OnInit {
           },
           (error) => {
             this.error = 'Failed to sell token: ' + error.message;
-            console.log(error)
+            console.log(error);
           }
         );
     }
+  }
+
+  backToMarkets() {
+    this.router.navigate(['/markets']);
   }
 }

@@ -1,5 +1,13 @@
 <div class="market-detail">
-  <h2>{{ market["question"] }}</h2>
+  <h2 class="row">
+    <div class="col-2">
+      <button class="btn btn-secondary" (click)="backToMarkets()">Back</button>
+    </div>
+    <div class="col py-2">
+      {{ market["question"] }}
+    </div>
+  </h2>
+  <hr />
   <ul class="outcomes">
     <li *ngFor="let outcome of outcomes; let i = index">
       <button class="btn btn-success" (click)="openModal(i, 'buy')">Buy</button>
