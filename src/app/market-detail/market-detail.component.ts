@@ -2,18 +2,56 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MarketService } from '../market.service';
 import { FormsModule } from '@angular/forms';
-import { NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-market-detail',
   templateUrl: './market-detail.component.html',
   styleUrls: ['./market-detail.component.css'],
-  imports: [FormsModule, NgFor],
+  imports: [FormsModule, CommonModule],
 })
 export class MarketDetailComponent implements OnInit {
-  market: any;
   selectedOutcomeIndex: number | null = null;
   amount: number = 0;
+  isModalOpen: boolean = false;
+  modalType: string = '';
+
+  market = {
+    id: 1,
+    question: 'Will it rain tomorrow?',
+    outcomeTokens: ['Yes', 'No'],
+  };
+
+  openModal(outcomeIndex: number, type: string) {
+    this.isModalOpen = true;
+    this.modalType = type;
+    this.selectedOutcomeIndex = outcomeIndex;
+    this.amount = 0;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+    this.modalType = '';
+    this.selectedOutcomeIndex = null;
+  }
+
+  confirmAction() {
+    if (this.selectedOutcomeIndex === null) return;
+
+    const action = {
+      marketId: 1,
+      amount: this.amount,
+      outcomeIndex: this.selectedOutcomeIndex,
+    };
+
+    if (this.modalType === 'buy') {
+      console.log('Buying:', action);
+    } else if (this.modalType === 'sell') {
+      console.log('Selling:', action);
+    }
+
+    this.closeModal();
+  }
 
   constructor(
     private route: ActivatedRoute,
