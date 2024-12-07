@@ -4,6 +4,12 @@ import { MarketService } from '../market.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+enum ModalTypesEnum {
+  BUY = 'buy',
+  SELL = 'sell',
+  NONE = 'none',
+}
+
 @Component({
   selector: 'app-market-detail',
   templateUrl: './market-detail.component.html',
@@ -14,42 +20,46 @@ export class MarketDetailComponent implements OnInit {
   selectedOutcomeIndex: number | null = null;
   amount: number = 0;
   isModalOpen: boolean = false;
-  modalType: string = '';
+  modalType: ModalTypesEnum = ModalTypesEnum.NONE;
 
-  market = {
-    id: 1,
-    question: 'Will it rain tomorrow?',
-    outcomeTokens: ['Yes', 'No'],
-  };
+  market: Record<string, any> = {};
+  outcomes: Record<string, Record<string, any>>[] = [];
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
   openModal(outcomeIndex: number, type: string) {
     this.isModalOpen = true;
-    this.modalType = type;
+    this.modalType = type as ModalTypesEnum;
     this.selectedOutcomeIndex = outcomeIndex;
     this.amount = 0;
   }
 
   closeModal() {
     this.isModalOpen = false;
-    this.modalType = '';
+    this.modalType = ModalTypesEnum.NONE;
     this.selectedOutcomeIndex = null;
   }
 
   confirmAction() {
-    if (this.selectedOutcomeIndex === null) return;
+    if (
+      this.selectedOutcomeIndex === null ||
+      this.selectedOutcomeIndex > this.outcomes.length
+    )
+      return;
 
-    const action = {
-      marketId: 1,
-      amount: this.amount,
-      outcomeIndex: this.selectedOutcomeIndex,
-    };
-
-    if (this.modalType === 'buy') {
-      console.log('Buying:', action);
-    } else if (this.modalType === 'sell') {
-      console.log('Selling:', action);
+    if (this.modalType === ModalTypesEnum.BUY) {
+      this.buyOutcome();
+    } else if (this.modalType === ModalTypesEnum.SELL) {
+      this.sellOutcome();
     }
-
+    switch (this.modalType) {
+      case ModalTypesEnum.BUY:
+        this.buyOutcome();
+        break;
+      case ModalTypesEnum.SELL:
+        this.sellOutcome();
+        break;
+    }
     this.closeModal();
   }
 
@@ -63,6 +73,7 @@ export class MarketDetailComponent implements OnInit {
     this.marketService.getMarketById(marketId).subscribe(
       (response) => {
         this.market = response.data;
+        this.outcomes = this.market?.['outcomeTokens'];
       },
       (error) => {
         console.error('Error loading market', error);
@@ -70,16 +81,30 @@ export class MarketDetailComponent implements OnInit {
     );
   }
 
+  set success(message: string) {
+    this.successMessage = message;
+    setTimeout(() => {
+      this.successMessage = null;
+    }, 5000);
+  }
+
+  set error(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => {
+      this.errorMessage = null;
+    }, 5000);
+  }
+
   buyOutcome(): void {
     if (this.selectedOutcomeIndex !== null) {
       this.marketService
-        .buyOutcome(this.market.id, this.amount, this.selectedOutcomeIndex)
+        .buyOutcome(this.market['id'], this.amount, this.selectedOutcomeIndex)
         .subscribe(
           (response) => {
-            console.log('Purchase successful:', response);
+            this.success = 'Token Bought.';
           },
           (error) => {
-            console.error('Error buying outcome:', error);
+            this.error = 'Failed to buy token: ' + error.message;
           }
         );
     }
@@ -88,13 +113,14 @@ export class MarketDetailComponent implements OnInit {
   sellOutcome(): void {
     if (this.selectedOutcomeIndex !== null) {
       this.marketService
-        .sellOutcome(this.market.id, this.amount, this.selectedOutcomeIndex)
+        .sellOutcome(this.market['id'], this.amount, this.selectedOutcomeIndex)
         .subscribe(
           (response) => {
-            console.log('Sell successful:', response);
+            this.success = 'Token Sold.';
           },
           (error) => {
-            console.error('Error selling outcome:', error);
+            this.error = 'Failed to sell token: ' + error.message;
+            console.log(error)
           }
         );
     }
