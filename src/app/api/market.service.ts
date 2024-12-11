@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
+import { MarketBalanceInfoType, MarketParticipationInfoType, MarketPriceInfoType } from './market.types';
+import { ResponseFormatObservable } from './api.types';
+
 
 @Injectable({
   providedIn: 'root',
@@ -38,5 +40,17 @@ export class MarketService {
       amount,
       outcomeIndex,
     });
+  }
+
+  getOutcomePrices(marketId: number): ResponseFormatObservable<MarketPriceInfoType[]> {
+    return this.apiService.get(`prediction-market/${marketId}/ctf/price`)
+  }
+
+  getUserBalances(marketId: number): ResponseFormatObservable<MarketBalanceInfoType[]> {
+    return this.apiService.get(`prediction-market/${marketId}/ctf/balance`)
+  }
+
+  getParticipationStats(marketId: number): ResponseFormatObservable<MarketParticipationInfoType[]> {
+    return this.apiService.get(`prediction-market/${marketId}/ctf/stats`)
   }
 }

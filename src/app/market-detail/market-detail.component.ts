@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MarketService } from '../market.service';
+import { MarketService } from '../api/market.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ConditionalTokenType } from '../api/market.types';
 
 enum ModalTypesEnum {
   BUY = 'buy',
@@ -23,7 +24,13 @@ export class MarketDetailComponent implements OnInit {
   modalType: ModalTypesEnum = ModalTypesEnum.NONE;
 
   market: Record<string, any> = {};
-  outcomes: Record<string, Record<string, any>>[] = [];
+  outcomes: {
+    token: ConditionalTokenType;
+    price: number;
+    balance: bigint | number;
+    participationPercentage: number;
+    title: string;
+  }[] = [];
   successMessage: string | null = null;
   errorMessage: string | null = null;
 
@@ -74,12 +81,59 @@ export class MarketDetailComponent implements OnInit {
     this.marketService.getMarketById(marketId).subscribe(
       (response) => {
         this.market = response.data;
-        this.outcomes = this.market?.['outcomeTokens'];
+        const outcomes: ConditionalTokenType[] = this.market?.['outcomeTokens'];
+        this.outcomes = outcomes
+          .sort((token1, token2) => +token1.tokenIndex - +token2.tokenIndex)
+          .map((outcome) => ({
+            token: outcome,
+            index: outcome.tokenIndex,
+            title: outcome.predictionOutcome?.['title'],
+            price: 0.0,
+            balance: 0.0,
+            participationPercentage: 0.0,
+          }));
       },
       (error) => {
         console.error('Error loading market', error);
       }
     );
+
+    this.marketService.getOutcomePrices(marketId).subscribe(
+      (response) => {
+        this.updateOutcomeField<number>('price', response.data);
+      },
+      (error) => {
+        console.error('Error loading market outcome prices!', error);
+      }
+    );
+
+    this.marketService.getUserBalances(marketId).subscribe(
+      (response) => {
+        this.updateOutcomeField<bigint>('balance', response.data);
+      },
+      (error) => {
+        console.error('Error loading user outcome balances!', error);
+      }
+    );
+
+    this.marketService.getUserBalances(marketId).subscribe(
+      (response) => {
+        this.updateOutcomeField<number>(
+          'participationPossibility',
+          response.data
+        );
+      },
+      (error) => {
+        console.error('Error loading user outcome participation stats!', error);
+      }
+    );
+  }
+
+  updateOutcomeField<T>(field: string, data?: Record<string, any>[]) {
+    if (!data?.length) return;
+    for (const info of data) {
+      (this.outcomes[info['index']] as any)[field] = info[field] as T;
+    }
   }
 
   set success(message: string) {
