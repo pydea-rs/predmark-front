@@ -30,8 +30,21 @@
   border: 1px solid #dee2e6;
   border-radius: 4px;
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.outcomes li .action-buttons {
+  display: flex;
   justify-content: space-between;
 }
+
+.outcomes li .outcome-details {
+  font-size: 14px;
+  color: #6c757d;
+  margin-top: 10px;
+}
+
 
 .outcomes li span {
   font-size: 18px;

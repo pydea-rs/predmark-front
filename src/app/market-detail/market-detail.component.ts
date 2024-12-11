@@ -28,7 +28,7 @@ export class MarketDetailComponent implements OnInit {
     token: ConditionalTokenType;
     price: number;
     balance: bigint | number;
-    participationPercentage: number;
+    participationPossibility: number;
     title: string;
   }[] = [];
   successMessage: string | null = null;
@@ -76,7 +76,7 @@ export class MarketDetailComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
+  loadMarket(): void {
     const marketId = +this.route.snapshot.paramMap.get('id')!;
     this.marketService.getMarketById(marketId).subscribe(
       (response) => {
@@ -90,7 +90,7 @@ export class MarketDetailComponent implements OnInit {
             title: outcome.predictionOutcome?.['title'],
             price: 0.0,
             balance: 0.0,
-            participationPercentage: 0.0,
+            participationPossibility: 0.0,
           }));
       },
       (error) => {
@@ -116,17 +116,22 @@ export class MarketDetailComponent implements OnInit {
       }
     );
 
-    this.marketService.getUserBalances(marketId).subscribe(
+    this.marketService.getParticipationStats(marketId).subscribe(
       (response) => {
         this.updateOutcomeField<number>(
           'participationPossibility',
           response.data
         );
+        console.log(response.data)
       },
       (error) => {
         console.error('Error loading user outcome participation stats!', error);
       }
     );
+  }
+
+  ngOnInit(): void {
+    this.loadMarket();
   }
 
   updateOutcomeField<T>(field: string, data?: Record<string, any>[]) {
@@ -157,6 +162,7 @@ export class MarketDetailComponent implements OnInit {
         .subscribe(
           (response) => {
             this.success = 'Token Bought.';
+            this.loadMarket();
           },
           (error) => {
             this.error = 'Failed to buy token: ' + error.message;
@@ -172,6 +178,7 @@ export class MarketDetailComponent implements OnInit {
         .subscribe(
           (response) => {
             this.success = 'Token Sold.';
+            this.loadMarket();
           },
           (error) => {
             this.error = 'Failed to sell token: ' + error.message;

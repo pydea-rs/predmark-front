@@ -10,10 +10,11 @@
   <hr />
   <ul class="outcomes row">
     @for (outcome of outcomes; track $index) {
-      <div *ngIf="$index && (outcomes.length % 2 !== 0 || !($index % 2))">
-        <hr />
-      </div>
-      <li>
+    <div *ngIf="$index && (outcomes.length % 2 !== 0 || !($index % 2))">
+      <hr />
+    </div>
+    <li>
+      <div class="action-buttons">
         <button class="btn btn-success" (click)="openModal($index, 'buy')">
           Buy
         </button>
@@ -21,7 +22,18 @@
         <button class="btn btn-danger" (click)="openModal($index, 'sell')">
           Sell
         </button>
-      </li>
+      </div>
+      <hr />
+      @for (stat of [{value: outcome.price, title: 'Price'}, {value:
+      outcome.balance, title: 'Your Balance'}, {value:
+      outcome.participationPossibility, title: 'Participation'}];
+      track $index) {
+      <div class="outcome-details row">
+        <div class="col">{{ stat.title }}</div>
+        <p class="col text-center" style="font-weight: bolder;">{{ stat.value }}</p>
+      </div>
+      }
+    </li>
     }
   </ul>
   <div
