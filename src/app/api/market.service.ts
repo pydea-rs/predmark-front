@@ -50,6 +50,10 @@ export class MarketService {
     return this.apiService.get(`prediction-market/${marketId}/ctf/balance`)
   }
 
+  getUserCollateralBalance(marketId: number): ResponseFormatObservable<MarketBalanceInfoType[]> {
+    return this.apiService.get(`prediction-market/${marketId}/collateral/balance`)
+  }
+
   getParticipationStats(marketId: number): ResponseFormatObservable<MarketParticipationInfoType[]> {
     return this.apiService.get(`prediction-market/${marketId}/ctf/stats`)
   }

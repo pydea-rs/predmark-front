@@ -33,6 +33,7 @@ export class MarketDetailComponent implements OnInit {
   }[] = [];
   successMessage: string | null = null;
   errorMessage: string | null = null;
+  userCollateralBalance: number | null = null;
 
   openModal(outcomeIndex: number, type: string) {
     this.isModalOpen = true;
@@ -116,13 +117,22 @@ export class MarketDetailComponent implements OnInit {
       }
     );
 
+
+    this.marketService.getUserCollateralBalance(marketId).subscribe(
+      (response) => {
+        this.userCollateralBalance = Number(response.data);
+      },
+      (error) => {
+        console.error('Error loading user outcome balances!', error);
+      }
+    );
+
     this.marketService.getParticipationStats(marketId).subscribe(
       (response) => {
         this.updateOutcomeField<number>(
           'participationPossibility',
           response.data
         );
-        console.log(response.data)
       },
       (error) => {
         console.error('Error loading user outcome participation stats!', error);

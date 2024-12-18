@@ -26,11 +26,13 @@
       <hr />
       @for (stat of [{value: outcome.price, title: 'Price'}, {value:
       outcome.balance, title: 'Your Balance'}, {value:
-      outcome.participationPossibility, title: 'Participation'}];
-      track $index) {
+      outcome.participationPossibility, title: 'Participation'}]; track $index)
+      {
       <div class="outcome-details row">
         <div class="col">{{ stat.title }}</div>
-        <p class="col text-center" style="font-weight: bolder;">{{ stat.value }}</p>
+        <p class="col text-center" style="font-weight: bolder">
+          {{ stat.value }}
+        </p>
       </div>
       }
     </li>
@@ -97,6 +99,13 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col mx-auto py-2 badge bg-primary badge-pill" style="font-size: 100%;" *ngIf="userCollateralBalance != null">
+      User's {{ market["collateralToken"]?.name }} Balance:
+      <span class="text-warning">{{ userCollateralBalance }}</span>
     </div>
   </div>
 </div>
