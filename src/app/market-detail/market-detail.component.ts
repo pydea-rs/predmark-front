@@ -33,6 +33,8 @@ export class MarketDetailComponent implements OnInit {
   }[] = [];
   successMessage: string | null = null;
   errorMessage: string | null = null;
+  infoMessage: string | null = null;
+
   userCollateralBalance: number | null = null;
 
   openModal(outcomeIndex: number, type: string) {
@@ -55,11 +57,6 @@ export class MarketDetailComponent implements OnInit {
     )
       return;
 
-    if (this.modalType === ModalTypesEnum.BUY) {
-      this.buyOutcome();
-    } else if (this.modalType === ModalTypesEnum.SELL) {
-      this.sellOutcome();
-    }
     switch (this.modalType) {
       case ModalTypesEnum.BUY:
         this.buyOutcome();
@@ -68,6 +65,7 @@ export class MarketDetailComponent implements OnInit {
         this.sellOutcome();
         break;
     }
+    this.infoMessage = 'Processing ...';
     this.closeModal();
   }
 
@@ -117,7 +115,6 @@ export class MarketDetailComponent implements OnInit {
       }
     );
 
-
     this.marketService.getUserCollateralBalance(marketId).subscribe(
       (response) => {
         this.userCollateralBalance = Number(response.data);
@@ -152,6 +149,7 @@ export class MarketDetailComponent implements OnInit {
   }
 
   set success(message: string) {
+    this.infoMessage = this.errorMessage = null;
     this.successMessage = message;
     setTimeout(() => {
       this.successMessage = null;
@@ -159,6 +157,7 @@ export class MarketDetailComponent implements OnInit {
   }
 
   set error(message: string) {
+    this.successMessage = this.infoMessage = null;
     this.errorMessage = message;
     setTimeout(() => {
       this.errorMessage = null;
