@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { MarketBalanceInfoType, MarketParticipationInfoType, MarketPriceInfoType } from './market.types';
+import { FaucetRequestInfoType, MarketBalanceInfoType, MarketParticipationInfoType, MarketPriceInfoType } from './market.types';
 import { ResponseFormatObservable } from './api.types';
 
 
@@ -56,5 +56,9 @@ export class MarketService {
 
   getParticipationStats(marketId: number): ResponseFormatObservable<MarketParticipationInfoType[]> {
     return this.apiService.get(`prediction-market/${marketId}/ctf/stats`)
+  }
+
+  requestFaucet(): ResponseFormatObservable<FaucetRequestInfoType> {
+      return this.apiService.post(`blockchain-wallet/faucet`);
   }
 }

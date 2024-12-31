@@ -36,7 +36,7 @@ export class ApiService {
 
   post<T = any>(
     path: string,
-    body: Record<string, any>,
+    body?: Record<string, any>,
     queryParams?: Record<string, any>
   ): Observable<T> {
     return this.http.post<T>(

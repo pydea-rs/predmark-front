@@ -6,6 +6,15 @@
     <div class="col py-2">
       {{ market["question"] }}
     </div>
+    <div class="col-2">
+      <button
+        [disabled]="!canRequestFaucet"
+        class="btn btn-warning"
+        (click)="requestFaucet()"
+      >
+        Faucet
+      </button>
+    </div>
   </h2>
   <hr />
   <ul class="outcomes row">
@@ -38,23 +47,25 @@
     </li>
     }
   </ul>
-  <div
-    class="badge bg-success bg-pill px-5 py-2 my-3 mx-auto"
-    *ngIf="successMessage"
-  >
-    {{ successMessage }}
-  </div>
-  <div
-    class="badge bg-info bg-pill px-5 py-2 my-3 mx-auto"
-    *ngIf="infoMessage"
-  >
-    {{ infoMessage }}
-  </div>
-  <div
-    class="badge bg-danger bg-pill px-5 py-2 my-3 mx-auto"
-    *ngIf="errorMessage"
-  >
-    {{ errorMessage }}
+  <div class="row text-center">
+    <div
+      class="col-8 badge bg-success bg-pill px-5 py-2 my-3 mx-auto"
+      *ngIf="successMessage"
+    >
+      {{ successMessage }}
+    </div>
+    <div
+      class="col-8 badge bg-info bg-pill px-5 py-2 my-3 mx-auto"
+      *ngIf="infoMessage"
+    >
+      {{ infoMessage }}
+    </div>
+    <div
+      class="col-8 badge bg-danger bg-pill px-5 py-2 my-3 mx-auto"
+      *ngIf="errorMessage"
+    >
+      {{ errorMessage }}
+    </div>
   </div>
 
   <div
@@ -109,7 +120,11 @@
   </div>
   <hr />
   <div class="row">
-    <div class="col mx-auto py-2 badge bg-primary badge-pill" style="font-size: 100%;" *ngIf="userCollateralBalance != null">
+    <div
+      class="col mx-auto py-2 badge bg-primary badge-pill"
+      style="font-size: 100%"
+      *ngIf="userCollateralBalance != null"
+    >
       User's {{ market["collateralToken"]?.name }} Balance:
       <span class="text-warning">{{ userCollateralBalance }}</span>
     </div>

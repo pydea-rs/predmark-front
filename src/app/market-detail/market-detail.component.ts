@@ -37,6 +37,14 @@ export class MarketDetailComponent implements OnInit {
 
   userCollateralBalance: number | null = null;
 
+  private lastFaucetRequestAt: number | null = null;
+
+  get canRequestFaucet() {
+    return (
+      !this.lastFaucetRequestAt || this.lastFaucetRequestAt + 60000 < Date.now()
+    );
+  }
+
   openModal(outcomeIndex: number, type: string) {
     this.isModalOpen = true;
     this.modalType = type as ModalTypesEnum;
@@ -94,6 +102,7 @@ export class MarketDetailComponent implements OnInit {
       },
       (error) => {
         console.error('Error loading market', error);
+        this.error = error.error?.message || error.message;
       }
     );
 
@@ -173,8 +182,9 @@ export class MarketDetailComponent implements OnInit {
             this.success = 'Token Bought.';
             this.loadMarket();
           },
-          (error) => {
-            this.error = 'Failed to buy token: ' + error.message;
+          (err) => {
+            this.error =
+              'Failed to buy token: ' + (err.error?.message || err.message);
           }
         );
     }
@@ -189,9 +199,9 @@ export class MarketDetailComponent implements OnInit {
             this.success = 'Token Sold.';
             this.loadMarket();
           },
-          (error) => {
-            this.error = 'Failed to sell token: ' + error.message;
-            console.log(error);
+          (err) => {
+            this.error =
+              'Failed to sell token: ' + (err.error?.message || err.message);
           }
         );
     }
@@ -199,5 +209,18 @@ export class MarketDetailComponent implements OnInit {
 
   backToMarkets() {
     this.router.navigate(['/markets']);
+  }
+
+  requestFaucet() {
+    this.marketService.requestFaucet().subscribe(
+      (response) => {
+        this.success = `Received ${response.data?.amount} ${response.data?.token}; Total = ${response.data?.balance} ${response.data?.token}`;
+        this.lastFaucetRequestAt = Date.now();
+      },
+      (err) => {
+        this.error = err.error?.message || err.message;
+      }
+    );
+    this.infoMessage = 'Processing ...';
   }
 }
