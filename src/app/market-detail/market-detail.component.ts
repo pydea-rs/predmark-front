@@ -212,6 +212,12 @@ export class MarketDetailComponent implements OnInit {
   }
 
   requestFaucet() {
+    if (!this.canRequestFaucet) {
+      this.infoMessage = `You can perform faucet request after ${
+        60 - (((Date.now() - (this.lastFaucetRequestAt || 0)) / 1e3) | 0)
+      }`;
+      return;
+    }
     this.marketService.requestFaucet().subscribe(
       (response) => {
         this.success = `Received ${response.data?.amount} ${response.data?.token}; Total = ${response.data?.balance} ${response.data?.token}`;
