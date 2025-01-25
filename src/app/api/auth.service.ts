@@ -20,7 +20,7 @@ export class AuthService {
 
   register(username: string, email: string, password: string): Observable<any> {
     const avatarId = 1;
-    const verificationCode = '12345';
+    const verificationCode = '123456';
     const referralCode = '';
     return this.http.post<any>(`${this.baseApiUrl}/auth/register`, {
       username,
