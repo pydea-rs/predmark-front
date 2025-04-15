@@ -102,23 +102,23 @@ export class MarketDetailComponent implements OnInit {
                 'participationPossibility'
               ],
           }));
+
+        this.marketService.getUserBalances(marketId).subscribe(
+          (response) => {
+            try {
+              this.updateOutcomeField<bigint>('balance', response.data);
+            } catch (ex) {
+              console.error(ex);
+            }
+          },
+          (error) => {
+            console.error('Error loading user outcome balances!', error);
+          }
+        );
       },
       (error) => {
         console.error('Error loading market', error);
         this.error = error.error?.message || error.message;
-      }
-    );
-
-    this.marketService.getUserBalances(marketId).subscribe(
-      (response) => {
-        try {
-          this.updateOutcomeField<bigint>('balance', response.data);
-        } catch (ex) {
-          console.error(ex);
-        }
-      },
-      (error) => {
-        console.error('Error loading user outcome balances!', error);
       }
     );
 
