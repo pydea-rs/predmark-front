@@ -95,9 +95,12 @@ export class MarketDetailComponent implements OnInit {
             token: outcome,
             index: outcome.tokenIndex,
             title: outcome.predictionOutcome?.['title'],
-            price: 0.0,
+            price: this.market?.['statistics']?.[outcome.tokenIndex]?.['price'],
             balance: 0.0,
-            participationPossibility: 0.0,
+            participationPossibility:
+              this.market?.['statistics']?.[outcome.tokenIndex]?.[
+                'participationPossibility'
+              ],
           }));
       },
       (error) => {
@@ -106,18 +109,13 @@ export class MarketDetailComponent implements OnInit {
       }
     );
 
-    this.marketService.getOutcomePrices(marketId).subscribe(
-      (response) => {
-        this.updateOutcomeField<number>('price', response.data);
-      },
-      (error) => {
-        console.error('Error loading market outcome prices!', error);
-      }
-    );
-
     this.marketService.getUserBalances(marketId).subscribe(
       (response) => {
-        this.updateOutcomeField<bigint>('balance', response.data);
+        try {
+          this.updateOutcomeField<bigint>('balance', response.data);
+        } catch (ex) {
+          console.error(ex);
+        }
       },
       (error) => {
         console.error('Error loading user outcome balances!', error);
@@ -130,18 +128,6 @@ export class MarketDetailComponent implements OnInit {
       },
       (error) => {
         console.error('Error loading user outcome balances!', error);
-      }
-    );
-
-    this.marketService.getParticipationStats(marketId).subscribe(
-      (response) => {
-        this.updateOutcomeField<number>(
-          'participationPossibility',
-          response.data
-        );
-      },
-      (error) => {
-        console.error('Error loading user outcome participation stats!', error);
       }
     );
   }
